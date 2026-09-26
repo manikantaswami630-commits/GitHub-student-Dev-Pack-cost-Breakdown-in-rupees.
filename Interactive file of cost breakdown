@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GitHub Student Pack — Price Breakdown</title>
+<style>
+  :root {
+    --bg: #0D1117;
+    --surface: #161B22;
+    --surface2: #1C2128;
+    --border: #30363D;
+    --border-subtle: #21262D;
+    --text: #E6EDF3;
+    --text-muted: #8B949E;
+    --text-dim: #6E7681;
+    --blue: #58A6FF;
+    --green: #3FB950;
+    --yellow: #D29922;
+    --purple: #BC8CFF;
+    --orange: #F0883E;
+    --red: #FF7B72;
+    --pink: #FF6EB3;
+    --teal: #39D353;
+    --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+
+  .header {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .header-left p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .header-right {
+    text-align: right;
+  }
+
+  .total-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 18px;
+    display: inline-block;
+  }
+
+  .total-badge .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .total-badge .amount {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .total-badge .sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .note-bar {
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-left: 3px solid var(--yellow);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .note-bar strong { color: var(--yellow); }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: rgba(88,166,255,0.08);
+  }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  thead th.num { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+
+  tbody tr.category-header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr.category-header td {
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 10px 14px;
+    vertical-align: middle;
+  }
+
+  .tool-name {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .tool-detail {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-dev    { background: rgba(88,166,255,0.15);  color: var(--blue);   border: 1px solid rgba(88,166,255,0.3); }
+  .badge-cloud  { background: rgba(240,136,62,0.15);  color: var(--orange); border: 1px solid rgba(240,136,62,0.3); }
+  .badge-learn  { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+  .badge-infra  { background: rgba(63,185,80,0.15);   color: var(--green);  border: 1px solid rgba(63,185,80,0.3); }
+  .badge-domain { background: rgba(210,153,34,0.15);  color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .badge-sec    { background: rgba(255,123,114,0.15); color: var(--red);    border: 1px solid rgba(255,123,114,0.3); }
+  .badge-prod   { background: rgba(57,211,83,0.15);   color: var(--teal);   border: 1px solid rgba(57,211,83,0.3); }
+
+  .offer-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 220px;
+  }
+
+  .duration {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .duration.long { color: var(--green); }
+  .duration.short { color: var(--yellow); }
+  .duration.onetime { color: var(--purple); }
+
+  .price-usd {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .price-inr {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .price-inr.high { color: var(--orange); }
+  .price-inr.very-high { color: var(--red); }
+
+  tfoot tr {
+    background: var(--bg);
+    border-top: 2px solid var(--border);
+  }
+
+  tfoot td {
+    padding: 14px 14px;
+    font-weight: 700;
+  }
+
+  .total-label {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .total-usd {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+
+  .total-inr {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--green);
+    text-align: right;
+    font-weight: 700;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  .exchange-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+
+  .exchange-note span {
+    font-family: var(--mono);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 16px 12px; }
+    .price-usd { display: none; }
+    td { padding: 8px 10px; }
+    thead th { padding: 8px 10px; }
+    .offer-text { max-width: 140px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>GitHub Student Developer Pack</h1>
+    <p>Detailed price breakdown · Strictly within stated offer limits</p>
+  </div>
+  <div class="header-right">
+    <div class="total-badge">
+      <div class="label">Total Market Value</div>
+      <div class="amount">₹4,17,144</div>
+      <div class="sub">if purchased individually · $4,966 USD</div>
+    </div>
+  </div>
+</div>
+
+<div class="note-bar">
+  <strong>Pricing basis:</strong> Market rates estimated from public pricing pages as of Sep 2026. Tools with no stated time limit (Travis CI, LocalStack, Clerk, Deepnote, Codecov, etc.) are excluded — their duration cannot be capped honestly. Exchange rate: 1 USD = ₹84.
+</div>
+
+<div class="filter-row">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterTable('all', this)">All</button>
+  <button class="filter-btn" onclick="filterTable('dev', this)">Dev Tools</button>
+  <button class="filter-btn" onclick="filterTable('cloud', this)">Cloud</button>
+  <button class="filter-btn" onclick="filterTable('learn', this)">Learning</button>
+  <button class="filter-btn" onclick="filterTable('infra', this)">Infra & APIs</button>
+  <button class="filter-btn" onclick="filterTable('domain', this)">Domains</button>
+  <button class="filter-btn" onclick="filterTable('sec', this)">Security</button>
+  <button class="filter-btn" onclick="filterTable('prod', this)">Productivity</button>
+</div>
+
+<div class="table-wrap">
+  <table id="priceTable">
+    <thead>
+      <tr>
+        <th style="width:200px">Tool</th>
+        <th>Category</th>
+        <th>What You Get</th>
+        <th>Duration</th>
+        <th class="num">USD Value</th>
+        <th class="num">INR Value</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- GITHUB CORE -->
+      <tr class="category-header"><td colspan="6">— GitHub Core</td></tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">GitHub Pro</div><div class="tool-detail">github.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Private repos, GitHub Actions, Pages, advanced code review tools</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$48</td>
+        <td class="price-inr">₹4,032</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">GitHub Copilot Student</div><div class="tool-detail">copilot.github.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Unlimited code completions + GitHub AI Credits for model access</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$120</td>
+        <td class="price-inr">₹10,080</td>
+      </tr>
+
+      <!-- CLOUD & HOSTING -->
+      <tr class="category-header"><td colspan="6">— Cloud & Hosting</td></tr>
+
+      <tr data-cat="cloud">
+        <td><div class="tool-name">Microsoft Azure</div><div class="tool-detail">azure.microsoft.com</div></td>
+        <td><span class="badge badge-cloud">Cloud</span></td>
+        <td><div class="offer-text">$100 Azure credit + free access to 25+ cloud services (ages 18+)</div></td>
+        <td><span class="duration onetime">One-time credit</span></td>
+        <td class="price-usd">$100</td>
+        <td class="price-inr">₹8,400</td>
+      </tr>
+
+      <tr data-cat="cloud">
+        <td><div class="tool-name">Heroku</div><div class="tool-detail">heroku.com</div></td>
+        <td><span class="badge badge-cloud">Cloud</span></td>
+        <td><div class="offer-text">$13 USD/month credit to deploy and manage apps on Heroku</div></td>
+        <td><span class="duration long">24 months</span></td>
+        <td class="price-usd">$312</td>
+        <td class="price-inr high">₹26,208</td>
+      </tr>
+
+      <tr data-cat="cloud">
+        <td><div class="tool-name">Camber (GPU)</div><div class="tool-detail">camber.ai</div></td>
+        <td><span class="badge badge-cloud">Cloud</span></td>
+        <td><div class="offer-text">40 CPU hours + 5 GPU hours + 50 GB storage — hard cap</div></td>
+        <td><span class="duration onetime">One-time credit</span></td>
+        <td class="price-usd">$50</td>
+        <td class="price-inr">₹4,200</td>
+      </tr>
+
+      <!-- DOMAINS -->
+      <tr class="category-header"><td colspan="6">— Domains & SSL</td></tr>
+
+      <tr data-cat="domain">
+        <td><div class="tool-name">Namecheap .me Domain</div><div class="tool-detail">namecheap.com</div></td>
+        <td><span class="badge badge-domain">Domain</span></td>
+        <td><div class="offer-text">1 year .me TLD domain registration</div></td>
+        <td><span class="duration short">12 months</span></td>
+        <td class="price-usd">$15</td>
+        <td class="price-inr">₹1,260</td>
+      </tr>
+
+      <tr data-cat="domain">
+        <td><div class="tool-name">Namecheap SSL Cert</div><div class="tool-detail">namecheap.com</div></td>
+        <td><span class="badge badge-domain">Domain</span></td>
+        <td><div class="offer-text">1 SSL certificate free for 1 year</div></td>
+        <td><span class="duration short">12 months</span></td>
+        <td class="price-usd">$9</td>
+        <td class="price-inr">₹756</td>
+      </tr>
+
+      <tr data-cat="domain">
+        <td><div class="tool-name">.TECH Domain</div><div class="tool-detail">get.tech</div></td>
+        <td><span class="badge badge-domain">Domain</span></td>
+        <td><div class="offer-text">One standard .TECH domain free for 1 year</div></td>
+        <td><span class="duration short">12 months</span></td>
+        <td class="price-usd">$50</td>
+        <td class="price-inr">₹4,200</td>
+      </tr>
+
+      <tr data-cat="domain">
+        <td><div class="tool-name">Name.com Domain</div><div class="tool-detail">name.com</div></td>
+        <td><span class="badge badge-domain">Domain</span></td>
+        <td><div class="offer-text">Free domain from 25+ extensions (.live, .studio, .software, .app, .dev)</div></td>
+        <td><span class="duration onetime">One-time</span></td>
+        <td class="price-usd">$15</td>
+        <td class="price-inr">₹1,260</td>
+      </tr>
+
+      <!-- LEARNING -->
+      <tr class="category-header"><td colspan="6">— Learning Platforms</td></tr>
+
+      <tr data-cat="learn">
+        <td><div class="tool-name">DataCamp</div><div class="tool-detail">datacamp.com</div></td>
+        <td><span class="badge badge-learn">Learning</span></td>
+        <td><div class="offer-text">3 months free DataCamp subscription — data science & ML courses</div></td>
+        <td><span class="duration short">3 months</span></td>
+        <td class="price-usd">$75</td>
+        <td class="price-inr">₹6,300</td>
+      </tr>
+
+      <tr data-cat="learn">
+        <td><div class="tool-name">Boot.dev</div><div class="tool-detail">boot.dev</div></td>
+        <td><span class="badge badge-learn">Learning</span></td>
+        <td><div class="offer-text">3 months complete interactive membership — Python, Go, backend dev</div></td>
+        <td><span class="duration short">3 months</span></td>
+        <td class="price-usd">$90</td>
+        <td class="price-inr">₹7,560</td>
+      </tr>
+
+      <tr data-cat="learn">
+        <td><div class="tool-name">Educative</div><div class="tool-detail">educative.io</div></td>
+        <td><span class="badge badge-learn">Learning</span></td>
+        <td><div class="offer-text">6 months free access to 70+ courses — web dev, Python, Java, ML</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$120</td>
+        <td class="price-inr">₹10,080</td>
+      </tr>
+
+      <tr data-cat="learn">
+        <td><div class="tool-name">FrontendMasters</div><div class="tool-detail">frontendmasters.com</div></td>
+        <td><span class="badge badge-learn">Learning</span></td>
+        <td><div class="offer-text">6 months free — in-depth JS, Node.js, React, frontend engineering</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$234</td>
+        <td class="price-inr high">₹19,656</td>
+      </tr>
+
+      <tr data-cat="learn">
+        <td><div class="tool-name">Scrimba Pro</div><div class="tool-detail">scrimba.com</div></td>
+        <td><span class="badge badge-learn">Learning</span></td>
+        <td><div class="offer-text">1 month free Pro — interactive coding + 40+ courses</div></td>
+        <td><span class="duration short">1 month</span></td>
+        <td class="price-usd">$25</td>
+        <td class="price-inr">₹2,100</td>
+      </tr>
+
+      <!-- DEV TOOLS -->
+      <tr class="category-header"><td colspan="6">— Developer Tools</td></tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">JetBrains IDEs</div><div class="tool-detail">jetbrains.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Free subscription — IntelliJ IDEA, PyCharm, WebStorm, all IDEs (1 year, renewable)</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$300</td>
+        <td class="price-inr high">₹25,200</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">GitLens Pro</div><div class="tool-detail">gitkraken.com/gitlens</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">6 months free — inline blame, Commit Graph, PR hover info in VS Code</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$30</td>
+        <td class="price-inr">₹2,520</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">GitKraken Desktop</div><div class="tool-detail">gitkraken.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">6 months Student Plan — visual Git client with GitHub integration</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$30</td>
+        <td class="price-inr">₹2,520</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">BrowserStack</div><div class="tool-detail">browserstack.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Free Automate Mobile Plan — test on 2000+ real browsers & devices (1 year)</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$348</td>
+        <td class="price-inr high">₹29,232</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">LambdaTest</div><div class="tool-detail">lambdatest.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Free Live Plan — automated & live cross-browser testing on 2000+ browsers (1 year)</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$348</td>
+        <td class="price-inr high">₹29,232</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">Polypane</div><div class="tool-detail">polypane.app</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">1 year individual plan free — build better websites in less time</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$228</td>
+        <td class="price-inr high">₹19,152</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">Bootstrap Studio</div><div class="tool-detail">bootstrapstudio.io</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Free license — desktop app for building responsive Bootstrap sites</div></td>
+        <td><span class="duration onetime">One-time license</span></td>
+        <td class="price-usd">$30</td>
+        <td class="price-inr">₹2,520</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">Tower Git Client</div><div class="tool-detail">git-tower.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Free Tower Pro license while student — Git client for Mac & Windows</div></td>
+        <td><span class="duration short">12 months</span></td>
+        <td class="price-usd">$69</td>
+        <td class="price-inr">₹5,796</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">SQLGate</div><div class="tool-detail">sqlgate.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">1 year Standard Subscription — IDE for multiple SQL databases</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$120</td>
+        <td class="price-inr">₹10,080</td>
+      </tr>
+
+      <tr data-cat="dev">
+        <td><div class="tool-name">ToDiagram Pro</div><div class="tool-detail">todiagram.com</div></td>
+        <td><span class="badge badge-dev">Dev Tools</span></td>
+        <td><div class="offer-text">Pro Plan — browser-based data editor, JSON/YAML/XML to diagrams, 10 docs cloud</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$120</td>
+        <td class="price-inr">₹10,080</td>
+      </tr>
+
+      <!-- INFRA & APIs -->
+      <tr class="category-header"><td colspan="6">— Infrastructure & APIs</td></tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">Datadog Pro</div><div class="tool-detail">datadoghq.com</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">Pro Account including 10 servers — cloud infrastructure monitoring</div></td>
+        <td><span class="duration long">24 months</span></td>
+        <td class="price-usd">$360</td>
+        <td class="price-inr high">₹30,240</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">MongoDB Atlas Credits</div><div class="tool-detail">mongodb.com</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">$50 Atlas credits + MongoDB Compass access</div></td>
+        <td><span class="duration onetime">Credit cap</span></td>
+        <td class="price-usd">$50</td>
+        <td class="price-inr">₹4,200</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">MongoDB University Cert</div><div class="tool-detail">mongodb.com/university</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">Free certification access valued at $150</div></td>
+        <td><span class="duration onetime">One-time</span></td>
+        <td class="price-usd">$150</td>
+        <td class="price-inr">₹12,600</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">Requestly</div><div class="tool-detail">requestly.io</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">Professional Plan (worth $270) — intercept, modify, mock HTTP requests for 1 year</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$270</td>
+        <td class="price-inr high">₹22,680</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">Stripe Credits</div><div class="tool-detail">stripe.com</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">$25 in Stripe credits — offset transaction fees on payments</div></td>
+        <td><span class="duration onetime">Credit cap</span></td>
+        <td class="price-usd">$25</td>
+        <td class="price-inr">₹2,100</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">Honeybadger Small</div><div class="tool-detail">honeybadger.io</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">Free Small account (1 year) — exception, uptime, and cron monitoring</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$300</td>
+        <td class="price-inr high">₹25,200</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">Simple Analytics</div><div class="tool-detail">simpleanalytics.com</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">Starter plan free for 1 year — 100k page views/month, privacy-friendly</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$228</td>
+        <td class="price-inr high">₹19,152</td>
+      </tr>
+
+      <tr data-cat="infra">
+        <td><div class="tool-name">DevCycle Starter</div><div class="tool-detail">devcycle.com</div></td>
+        <td><span class="badge badge-infra">Infra & APIs</span></td>
+        <td><div class="offer-text">1 year Starter Plan — unlimited seats, flags, and usage (feature flags)</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$240</td>
+        <td class="price-inr high">₹20,160</td>
+      </tr>
+
+      <!-- SECURITY -->
+      <tr class="category-header"><td colspan="6">— Security & Analytics</td></tr>
+
+      <tr data-cat="sec">
+        <td><div class="tool-name">1Password</div><div class="tool-detail">1password.com</div></td>
+        <td><span class="badge badge-sec">Security</span></td>
+        <td><div class="offer-text">1Password + Developer Tools free for 1 year</div></td>
+        <td><span class="duration long">12 months</span></td>
+        <td class="price-usd">$36</td>
+        <td class="price-inr">₹3,024</td>
+      </tr>
+
+      <tr data-cat="sec">
+        <td><div class="tool-name">Dashlane Premium</div><div class="tool-detail">dashlane.com</div></td>
+        <td><span class="badge badge-sec">Security</span></td>
+        <td><div class="offer-text">6 months Dashlane Premium — password manager</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$18</td>
+        <td class="price-inr">₹1,512</td>
+      </tr>
+
+      <tr data-cat="sec">
+        <td><div class="tool-name">AstraSecurity</div><div class="tool-detail">getastra.com</div></td>
+        <td><span class="badge badge-sec">Security</span></td>
+        <td><div class="offer-text">6 months website firewall & malware scanner access</div></td>
+        <td><span class="duration short">6 months</span></td>
+        <td class="price-usd">$210</td>
+        <td class="price-inr high">₹17,640</td>
+      </tr>
+
+      <!-- PRODUCTIVITY -->
+      <tr class="category-header"><td colspan="6">— Productivity</td></tr>
+
+      <tr data-cat="prod">
+        <td><div class="tool-name">Visme Starter</div><div class="tool-detail">visme.co</div></td>
+        <td><span class="badge badge-prod">Productivity</span></td>
+        <td><div class="offer-text">3 months free Starter Plan — presentations, data visualizations, branded content</div></td>
+        <td><span class="duration short">3 months</span></td>
+        <td class="price-usd">$75</td>
+        <td class="price-inr">₹6,300</td>
+      </tr>
+
+      <tr data-cat="prod">
+        <td><div class="tool-name">InterviewCake</div><div class="tool-detail">interviewcake.com</div></td>
+        <td><span class="badge badge-prod">Productivity</span></td>
+        <td><div class="offer-text">1 week full access to coding interview prep course</div></td>
+        <td><span class="duration onetime">1 week access</span></td>
+        <td class="price-usd">$49</td>
+        <td class="price-inr">₹4,116</td>
+      </tr>
+
+    </tbody>
+    <tfoot id="tableFoot"></tfoot>
+  </table>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Dev Tools</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Cloud</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Learning</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Infra & APIs</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Domains</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Security</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--teal)"></div>Productivity</div>
+</div>
+
+<p class="exchange-note">Exchange rate used: <span>1 USD = ₹84</span> · Prices estimated from public pages Sep 2026 · Not official GitHub figures</p>
+
+<style>
+  tfoot tr.subtotal-row {
+    border-top: 1px solid var(--border-subtle);
+    background: var(--surface2);
+  }
+  tfoot tr.subtotal-row td {
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+  tfoot tr.subtotal-row .sub-label {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  tfoot tr.subtotal-row .sub-count {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: 6px;
+  }
+  tfoot tr.subtotal-row .sub-usd {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  tfoot tr.subtotal-row .sub-inr {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+  }
+  tfoot tr.grand-total {
+    background: var(--bg);
+    border-top: 2px solid var(--border);
+  }
+  tfoot tr.grand-total td {
+    padding: 14px 14px;
+    font-weight: 700;
+  }
+  .grand-label { font-size: 14px; color: var(--text); }
+  .grand-usd { font-family: var(--mono); font-size: 13px; color: var(--text-muted); text-align: right; }
+  .grand-inr { font-family: var(--mono); font-size: 18px; color: var(--green); text-align: right; font-weight: 700; }
+
+  /* cat color map for subtotal rows */
+  .sub-dev    { color: var(--blue); }
+  .sub-cloud  { color: var(--orange); }
+  .sub-learn  { color: var(--purple); }
+  .sub-infra  { color: var(--green); }
+  .sub-domain { color: var(--yellow); }
+  .sub-sec    { color: var(--red); }
+  .sub-prod   { color: var(--teal); }
+</style>
+
+<script>
+const USD_TO_INR = 84;
+
+// Category metadata
+const catMeta = {
+  dev:    { label: 'Dev Tools',       cls: 'sub-dev' },
+  cloud:  { label: 'Cloud & Hosting', cls: 'sub-cloud' },
+  learn:  { label: 'Learning',        cls: 'sub-learn' },
+  infra:  { label: 'Infra & APIs',    cls: 'sub-infra' },
+  domain: { label: 'Domains & SSL',   cls: 'sub-domain' },
+  sec:    { label: 'Security',        cls: 'sub-sec' },
+  prod:   { label: 'Productivity',    cls: 'sub-prod' },
+};
+
+// Extract USD value from a row's .price-usd cell text
+function getUSD(row) {
+  const cell = row.querySelector('.price-usd');
+  if (!cell) return 0;
+  return parseFloat(cell.textContent.replace(/[^0-9.]/g, '')) || 0;
+}
+
+function formatINR(n) {
+  // Indian numbering: e.g. 1,19,316
+  const s = Math.round(n).toString();
+  if (s.length <= 3) return '₹' + s;
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  const grouped = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+  return '₹' + grouped + ',' + last3;
+}
+
+function rebuildFoot(activeFilter) {
+  const foot = document.getElementById('tableFoot');
+  foot.innerHTML = '';
+
+  const allRows = Array.from(document.querySelectorAll('#priceTable tbody tr[data-cat]'));
+
+  // Collect visible rows per category
+  const catOrder = ['dev', 'cloud', 'learn', 'infra', 'domain', 'sec', 'prod'];
+  let grandUSD = 0;
+  let grandCount = 0;
+
+  catOrder.forEach(cat => {
+    const rows = allRows.filter(r => r.dataset.cat === cat && r.style.display !== 'none');
+    if (rows.length === 0) return;
+
+    const catUSD = rows.reduce((sum, r) => sum + getUSD(r), 0);
+    const catINR = catUSD * USD_TO_INR;
+    grandUSD += catUSD;
+    grandCount += rows.length;
+
+    const meta = catMeta[cat];
+    const tr = document.createElement('tr');
+    tr.className = 'subtotal-row';
+    tr.innerHTML = `
+      <td colspan="4" class="sub-label">
+        <span class="${meta.cls}">${meta.label}</span>
+        <span class="sub-count">${rows.length} tool${rows.length > 1 ? 's' : ''}</span>
+      </td>
+      <td class="sub-usd">$${catUSD.toLocaleString()}</td>
+      <td class="sub-inr ${meta.cls}">${formatINR(catINR)}</td>
+    `;
+    foot.appendChild(tr);
+  });
+
+  // Grand total row
+  const grandINR = grandUSD * USD_TO_INR;
+  const gtRow = document.createElement('tr');
+  gtRow.className = 'grand-total';
+  gtRow.innerHTML = `
+    <td colspan="4" class="grand-label">Grand Total · ${grandCount} tools</td>
+    <td class="grand-usd">$${grandUSD.toLocaleString()} USD</td>
+    <td class="grand-inr">${formatINR(grandINR)}</td>
+  `;
+  foot.appendChild(gtRow);
+}
+
+function filterTable(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const rows = document.querySelectorAll('#priceTable tbody tr[data-cat]');
+  const headers = document.querySelectorAll('#priceTable tbody tr.category-header');
+
+  rows.forEach(row => {
+    row.style.display = (cat === 'all' || row.dataset.cat === cat) ? '' : 'none';
+  });
+
+  headers.forEach(header => {
+    let next = header.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('category-header')) {
+      if (next.style.display !== 'none') { hasVisible = true; break; }
+      next = next.nextElementSibling;
+    }
+    header.style.display = hasVisible ? '' : 'none';
+  });
+
+  rebuildFoot(cat);
+}
+
+// Build on load
+rebuildFoot('all');
+</script>
+
+</body>
+</html>
